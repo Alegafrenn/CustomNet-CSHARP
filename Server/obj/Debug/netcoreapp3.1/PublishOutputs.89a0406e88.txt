@@ -1,0 +1,7 @@
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\Server.exe
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\Server.dll
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\Server.deps.json
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\Server.runtimeconfig.json
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\Server.pdb
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\CustomNet.dll
+C:\Users\Dima\Documents\GitHub\CustomNet\Server\bin\Debug\netcoreapp3.1\publish\CustomNet.pdb

@@ -1,0 +1,3 @@
+C:\Users\Dima\Documents\GitHub\CustomNet\CustomNet\bin\Debug\netstandard2.0\publish\CustomNet.dll
+C:\Users\Dima\Documents\GitHub\CustomNet\CustomNet\bin\Debug\netstandard2.0\publish\CustomNet.deps.json
+C:\Users\Dima\Documents\GitHub\CustomNet\CustomNet\bin\Debug\netstandard2.0\publish\CustomNet.pdb

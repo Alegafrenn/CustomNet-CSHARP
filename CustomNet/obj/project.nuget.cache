@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "rkZ/Wn3ne5lbDpH1jgGCRBFoazXjX1NPSlI2ctn1UvFqZ+W6KlVDz/QKgqQpVvPopQibVaQ/7sC5mjLA34OI3Q==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Dima\\Documents\\GitHub\\CustomNet\\CustomNet\\CustomNet.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Dima\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\Dima\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
