@@ -39,7 +39,7 @@ namespace Server
         {
             for(int i = 0;i < max_players;i++)
             {
-                if(server.client[i].connected) server.SendPacket(i,new CustomPacket(){action_id=228,data="abc"});
+                if(server.client[i].socket != null) server.SendPacket(i,new CustomPacket(){action_id=228,data="abc"});
             }
         }
     }

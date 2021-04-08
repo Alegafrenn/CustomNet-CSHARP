@@ -25,12 +25,12 @@ namespace CustomNet
         public delegate void _ClientConnected(int clientid);
         public delegate void _ClientDisconnected(int clientid, Disconnected reason);
         public delegate void _PacketReceived(int clientid, Packet.CustomPacket packet);
-        public _ClientConnected ClientConnected;
-        public _ClientDisconnected ClientDisconnected;
-        public _PacketReceived PacketReceived;
-        private void NotAssignedEvent(int clientid) {}
-        private void NotAssignedEvent(int clientid, Disconnected reason) {}
-        private void NotAssignedEvent(int clientid, Packet.CustomPacket packet) {}
+        public _ClientConnected ClientConnected = NotAssignedEvent;
+        public _ClientDisconnected ClientDisconnected = NotAssignedEvent;
+        public _PacketReceived PacketReceived = NotAssignedEvent;
+        private static void NotAssignedEvent(int clientid) {}
+        private static void NotAssignedEvent(int clientid, Disconnected reason) {}
+        private static void NotAssignedEvent(int clientid, Packet.CustomPacket packet) {}
 
         public CustomServer(int _buffer_size = 8192)
         {
