@@ -84,31 +84,29 @@ namespace CustomNet
         {
             try
             {
-                socket.EndReceive(result);
-            } catch{ _Disconnect(Disconnected.Lost_Connection); return; }
-            try
-            {
-                Packet.CustomPacket packet = (Packet.CustomPacket)Packet.CustomPacketHandler.Deserialize(buffer);
-                buffer = new byte[buffer_size];
-                if(packet.action_id == -2)
+                if(socket.EndReceive(result) <= 0) 
                 {
-                    if(packet.data == (object)"ping")
-                    {
-                        ping_count.Stop();
-                        ping = ping_counter;
-                        ping_counter = 0;
-                    }
-                    if(packet.data == (object)"close")
-                    {
-                        _Disconnect(Disconnected.Server_Closed);
-                        return;
-                    }
+                    _Disconnect(Disconnected.Lost_Connection); 
+                    return;
                 }
-                else PacketReceived(packet);
+            } catch { _Disconnect(Disconnected.Lost_Connection); return; }
+            Packet.CustomPacket packet = (Packet.CustomPacket)Packet.CustomPacketHandler.Deserialize(buffer);
+            buffer = new byte[buffer_size];
+            if(packet.action_id == -2)
+            {
+                if(packet.data == (object)"ping")
+                {
+                    ping_count.Stop();
+                    ping = ping_counter;
+                    ping_counter = 0;
+                }
+                if(packet.data == (object)"close")
+                {
+                    _Disconnect(Disconnected.Server_Closed);
+                    return;
+                }
             }
-            catch{ 
-                //LostPacket 
-            }
+            else PacketReceived(packet);
             socket.BeginReceive(buffer,0,buffer.Length,SocketFlags.None,new AsyncCallback(Receive),null);
         }
         private void _Disconnect(Disconnected reason)
