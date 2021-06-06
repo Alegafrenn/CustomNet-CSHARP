@@ -24,13 +24,13 @@ namespace CustomNet
 
         public delegate void _ClientConnected(int clientid);
         public delegate void _ClientDisconnected(int clientid, Disconnected reason);
-        public delegate void _PacketReceived(int clientid, Packet.CustomPacket packet);
+        public delegate void _PacketReceived(int clientid, Packet packet);
         public _ClientConnected ClientConnected = NotAssignedEvent;
         public _ClientDisconnected ClientDisconnected = NotAssignedEvent;
         public _PacketReceived PacketReceived = NotAssignedEvent;
         private static void NotAssignedEvent(int clientid) {}
         private static void NotAssignedEvent(int clientid, Disconnected reason) {}
-        private static void NotAssignedEvent(int clientid, Packet.CustomPacket packet) {}
+        private static void NotAssignedEvent(int clientid, Packet packet) {}
 
         public CustomServer(int _buffer_size = 8192)
         {
@@ -59,7 +59,7 @@ namespace CustomNet
         public bool Stop()
         {
             if(!started) return false;
-            for(int i = 0;i < max_clients;i++) if(client[i].socket != null) { _SendPacket(i,new Packet.CustomPacket(){action_id=-2,data="close"}); }
+            for(int i = 0;i < max_clients;i++) if(client[i].socket != null) { _SendPacket(i,new Packet(){action_id=-2,data="close"}); }
             max_clients = 0;
             cooldown_timer.Stop();
             client = null;
@@ -67,18 +67,28 @@ namespace CustomNet
             started = false;
             return true;
         }
-        public bool SendPacket(int id,Packet.CustomPacket packet)
+        public bool SendPacket(int id,Packet packet)
         {
             if(!started || client[id].socket == null || packet.action_id < 0 || client[id].cooldown == true) return false;
-            client[id].socket.Send(Packet.CustomPacketHandler.Serialize(packet));
+            client[id].socket.Send(PacketHandler.Serialize(packet));
             client[id].cooldown = true;
             return true;
         }
 
-        private void _SendPacket(int id,Packet.CustomPacket packet) { client[id].socket.Send(Packet.CustomPacketHandler.Serialize(packet)); }
+        private void _SendPacket(int id,Packet packet) { client[id].socket.Send(PacketHandler.Serialize(packet)); }
         private void AcceptConnection(IAsyncResult result)
         {
             Socket clientsocket = socket.EndAccept(result);
+            byte[] buffer = new byte[64];
+            clientsocket.Receive(buffer);
+            if(Convert.ToInt32(Encoding.ASCII.GetString(buffer)) == 1)
+            {
+                clientsocket.Send(PacketHandler.Serialize(new ServerData(){server_clients=clients,server_max_clients=max_clients}));
+                clientsocket.Shutdown(SocketShutdown.Both);
+                clientsocket.Close();
+                socket.BeginAccept(new AsyncCallback(AcceptConnection),null);
+                return;
+            }
             if(clients >= max_clients)
             {
                 clientsocket.Shutdown(SocketShutdown.Both);
@@ -107,7 +117,7 @@ namespace CustomNet
             try
             {
                 client[id].socket.EndReceive(result);
-                Packet.CustomPacket packet = (Packet.CustomPacket)Packet.CustomPacketHandler.Deserialize(client[id].buffer);
+                Packet packet = (Packet)PacketHandler.Deserialize(client[id].buffer);
                 if(packet.action_id == -2)//specific actions
                 {
                     if(packet.data == (object)"disconnect")

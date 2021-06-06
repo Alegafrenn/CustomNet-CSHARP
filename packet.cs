@@ -2,16 +2,22 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace CustomNet.Packet
+namespace CustomNet
 {
-    [Serializable]
-    public class CustomPacket
+    [Serializable] public class Packet
     {
         public int action_id = -1;
         public object data = "";
     }
 
-    public static class CustomPacketHandler
+    [Serializable] public class ServerData
+    {
+        public int server_clients = -1;
+        public int server_max_clients = -1;
+        public int server_ping = -1;
+    }
+
+    public static class PacketHandler
     {
         private static MemoryStream ms;
         private static BinaryFormatter bf = new BinaryFormatter();

@@ -1,3 +1,0 @@
-C:\Users\Dima\Desktop\CustomNet\bin\Debug\netstandard2.0\publish\CustomNet.dll
-C:\Users\Dima\Desktop\CustomNet\bin\Debug\netstandard2.0\publish\CustomNet.deps.json
-C:\Users\Dima\Desktop\CustomNet\bin\Debug\netstandard2.0\publish\CustomNet.pdb

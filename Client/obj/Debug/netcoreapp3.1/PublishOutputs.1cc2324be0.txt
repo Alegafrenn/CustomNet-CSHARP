@@ -1,7 +1,0 @@
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\Client.exe
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\Client.dll
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\Client.deps.json
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\Client.runtimeconfig.json
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\Client.pdb
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\CustomNet.dll
-C:\Users\Dima\Desktop\Client\bin\Debug\netcoreapp3.1\publish\CustomNet.pdb
