@@ -9,19 +9,27 @@ namespace Server
         private static int port = 228;
         private static int max_players = 2;
         private static CustomServer server = new CustomServer();
-        private static Timer timer = new Timer(500){ AutoReset = true };
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting...");
-            timer.Elapsed += send_pack;
             server.ClientConnected = OnClientConnected;
             server.ClientDisconnected = OnClientDisconnected;
             server.PacketReceived = OnPacketReceived;
-            server.Start(port,max_players);
-            Console.WriteLine("Server started on port "+port);
-            timer.Start();
-            Console.Read();
+            Handle();
         }
+
+        static void Handle()
+        {
+            string input = Console.ReadLine();
+
+            if(input == "start") {server.Start(port, max_players); Console.WriteLine("Server started on port "+port);}
+            else if(input == "stop") server.Stop();
+            else if(input == "send") for(int i = server.clients - 1; i >= 0; i--) { server.SendPacket(i,new Packet(){action_id=0,data=(object)"Hello World!"}); }
+            Handle();
+        }
+
+
+
+
         private static void OnClientConnected(int id)
         {
             Console.WriteLine("[ClientConnected][ID: "+id+"]");
@@ -33,13 +41,6 @@ namespace Server
         private static void OnPacketReceived(int id,Packet packet)
         {
             Console.WriteLine("[Packet][ID: "+id+"][ActionID: "+packet.action_id+"][Data: "+packet.data+"]");
-        }
-        private static void send_pack(object o,ElapsedEventArgs e)
-        {
-            for(int i = 0;i < max_players;i++)
-            {
-                if(server.client[i].socket != null) server.SendPacket(i,new Packet(){action_id=228,data="abc"});
-            }
         }
     }
 }

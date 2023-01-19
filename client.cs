@@ -9,7 +9,6 @@ namespace CustomNet
     public class CustomClient
     {
         private Socket socket;
-        private Socket checksocket;
         private byte[] buffer;
         public bool connected { get; private set; }
         private int buffer_size;
@@ -32,8 +31,7 @@ namespace CustomNet
 
         public CustomClient(int _buffer_size = 8192)
         {
-            socket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
-            checksocket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
+            socket = null;
             buffer = new byte[_buffer_size];
             buffer_size = _buffer_size;
             connected = false;
@@ -48,6 +46,7 @@ namespace CustomNet
         public Connected Connect(string ip, int port)
         {
             if(connected) return Connected.Already_Connected;
+            socket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
             try { socket.Connect(ip,port); }
             catch { return Connected.No_Connection; }
             try
@@ -68,6 +67,7 @@ namespace CustomNet
         }
         public ServerData GetServerData(string ip, int port)
         {
+            Socket checksocket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
             try { checksocket.Connect(ip,port); }
             catch { return new ServerData(); }
             try
@@ -77,10 +77,10 @@ namespace CustomNet
                 checksocket.Receive(buffer,0,buffer.Length,SocketFlags.None);
                 ping_timer.Stop();
                 ServerData data = (ServerData)PacketHandler.Deserialize(buffer);
-                data.server_ping = ping_counter;
+                data.server_ping = ping_counter / 2;
                 ping_counter = 0;
                 buffer = new byte[buffer_size];
-                checksocket.Disconnect(true);
+                checksocket.Disconnect(false);
                 return data;
             }
             catch { return new ServerData();}
@@ -88,7 +88,7 @@ namespace CustomNet
         public bool Disconnect()
         {
             if(!connected) return false;
-            _SendPacket(new Packet(){action_id=-2,data="disconnect"});
+            socket.Send(PacketHandler.Serialize(new Packet(){action_id=-2,data="disconnect"}));
             _Disconnect(Disconnected.By_Client);
             return true;
         }
@@ -111,7 +111,7 @@ namespace CustomNet
                     _Disconnect(Disconnected.Lost_Connection); 
                     return;
                 }
-            } catch { _Disconnect(Disconnected.Lost_Connection); return; }
+            } catch { return; }
             Packet packet = (Packet)PacketHandler.Deserialize(buffer);
             buffer = new byte[buffer_size];
             if(packet.action_id == -2)
@@ -119,7 +119,7 @@ namespace CustomNet
                 if(packet.data == (object)"ping")
                 {
                     ping_count.Stop();
-                    ping = ping_counter;
+                    ping = ping_counter / 2;
                     ping_counter = 0;
                 }
                 if(packet.data == (object)"close")
@@ -133,13 +133,15 @@ namespace CustomNet
         }
         private void _Disconnect(Disconnected reason)
         {
+            if(!connected) return;
             if(ping_timer.Enabled) ping_timer.Stop();
+            socket.Disconnect(false);
+            socket = null;
             ClientDisconnected(reason);
             connected = false;
             buffer = new byte[buffer_size];
             ping = 0;
             ping_counter = 0;
-            socket.Disconnect(true);
         }
         private void ping_send(Object source, ElapsedEventArgs e)
         {

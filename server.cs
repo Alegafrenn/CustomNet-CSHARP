@@ -20,7 +20,7 @@ namespace CustomNet
             public bool cooldown = false;
         }
         public _client[] client;
-        private Timer cooldown_timer = new Timer(50){ AutoReset = true };
+        private System.Timers.Timer cooldown_timer = new System.Timers.Timer(50){ AutoReset = true };
 
         public delegate void _ClientConnected(int clientid);
         public delegate void _ClientDisconnected(int clientid, Disconnected reason);
@@ -60,11 +60,11 @@ namespace CustomNet
         {
             if(!started) return false;
             for(int i = 0;i < max_clients;i++) if(client[i].socket != null) { _SendPacket(i,new Packet(){action_id=-2,data="close"}); }
+            started = false;
             max_clients = 0;
             cooldown_timer.Stop();
             client = null;
             socket.Close();
-            started = false;
             return true;
         }
         public bool SendPacket(int id,Packet packet)
@@ -78,6 +78,7 @@ namespace CustomNet
         private void _SendPacket(int id,Packet packet) { client[id].socket.Send(PacketHandler.Serialize(packet)); }
         private void AcceptConnection(IAsyncResult result)
         {
+            if(!started) return;
             Socket clientsocket = socket.EndAccept(result);
             byte[] buffer = new byte[64];
             clientsocket.Receive(buffer);
@@ -113,7 +114,8 @@ namespace CustomNet
         }
         private void Receive(IAsyncResult result)
         {
-            int id = (int)result.AsyncState;
+            int id = Convert.ToInt32(result.AsyncState);
+        
             try
             {
                 client[id].socket.EndReceive(result);
